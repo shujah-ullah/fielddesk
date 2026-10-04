@@ -115,6 +115,16 @@ export function FieldTool() {
           <Link to="/feedback" className="inline-flex text-sm font-medium text-copper-deep underline underline-offset-4">Report calculation</Link>
         </section>
       </div>
+      <section className="mt-10 max-w-3xl">
+        <h2 className="font-serif text-3xl">What this sheet does</h2>
+        <ol className="mt-4 list-decimal space-y-3 pl-6 text-lg leading-relaxed">
+          <li>You enter the room: floor area, ceiling height, climate zone, insulation, glass, sun, and how many people.</li>
+          <li>The sheet screens a cooling number from those choices. It is a planning number, not a full room-by-room load.</li>
+          <li>It turns that cooling number into supply air. Airflow is the cooling load divided by 1.08 times the temperature difference you set.</li>
+          <li>It sizes a round duct for that air at the friction rate you set, then a rectangle that moves the same air.</li>
+          <li>If the air is moving too fast for that kind of run, the note tells you to go up one size.</li>
+        </ol>
+      </section>
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur sm:hidden">
         <dl className="grid grid-cols-3 gap-2 text-center">
           <div><dt className="text-[11px] uppercase tracking-wide text-muted">Cooling</dt><dd className="text-sm font-semibold tabular-nums">{formatNum(load.coolBtu)}</dd></div>
