@@ -1,0 +1,14 @@
+node_modules
+dist
+.output
+.vinxi
+.tanstack
+.vercel
+.wrangler
+.env
+.env.*
+screenshots
+artifacts
+attachments
+.grok
+*.log
