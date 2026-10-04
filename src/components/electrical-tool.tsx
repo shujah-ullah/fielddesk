@@ -237,42 +237,54 @@ export function ServiceTool() {
 
 export function WireTool() {
   const [material, setMaterial] = useState<"cu" | "al">("cu");
-  const rows = WIRES.filter((wire) => (material === "cu" ? wire.cu60 : wire.al60) != null || (material === "cu" ? wire.cu90 : wire.al90) != null);
-  const cell = (value: number | null) => (value == null ? "—" : `${value} A`);
+  const [temp, setTemp] = useState<"60" | "75" | "90">("75");
+  const amperes = (wire: (typeof WIRES)[number]) => {
+    if (material === "al") return temp === "60" ? wire.al60 : temp === "75" ? wire.al75 : wire.al90;
+    return temp === "60" ? wire.cu60 : temp === "75" ? wire.cu75 : wire.cu90;
+  };
+  const rows = WIRES.filter((wire) => amperes(wire) != null);
   return (
     <Sheet
       kicker="Table 310.16 · screening"
-      title="Read the ampere columns."
-      note="60°C, 75°C, and 90°C are the three columns in the table. Most breakers and lugs are 60°C or 75°C, so the circuit is usually limited to those. The 90°C column is the insulation rating."
+      title="Read the ampere column."
+      note="Pick the temperature column. Most breakers and lugs are 60°C or 75°C, so the circuit is usually limited to those. 90°C is the insulation rating."
       steps={[
         "This page does not size a job. It shows how many amperes each wire can carry.",
-        "Pick copper or aluminum.",
-        "Each row shows that size at 60°C, 75°C, and 90°C.",
+        "Pick copper or aluminum, then 60°C, 75°C, or 90°C.",
+        "Each row is a wire size and the amperes for the temperature you picked.",
         "On a normal circuit, 14 AWG copper stops at 15 A, 12 AWG at 20 A, and 10 AWG at 30 A. A motor circuit is one case where the breaker can be higher than that.",
       ]}
     >
       <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
         <CalcHead />
-        <Field label="Material"><select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}><option value="cu">Copper</option><option value="al">Aluminum</option></select></Field>
+        <Field label="Material">
+          <select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}>
+            <option value="cu">Copper</option>
+            <option value="al">Aluminum</option>
+          </select>
+        </Field>
+        <Field label="Temperature">
+          <select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75" | "90")}>
+            <option value="60">60°C</option>
+            <option value="75">75°C</option>
+            <option value="90">90°C</option>
+          </select>
+        </Field>
       </form>
       <Result>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-muted">
-                <th className="py-2 pr-3">Size</th>
-                <th className="py-2 pr-3">60°C</th>
-                <th className="py-2 pr-3">75°C</th>
-                <th className="py-2">90°C</th>
+                <th className="py-2">Size</th>
+                <th className="py-2">Amperes at {temp}°C</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((wire) => (
                 <tr key={wire.awg} className="border-t border-line">
-                  <td className="py-3 pr-3">{wire.awg}</td>
-                  <td className="py-3 pr-3 tabular-nums">{cell(material === "cu" ? wire.cu60 : wire.al60)}</td>
-                  <td className="py-3 pr-3 tabular-nums">{cell(material === "cu" ? wire.cu75 : wire.al75)}</td>
-                  <td className="py-3 tabular-nums">{cell(material === "cu" ? wire.cu90 : wire.al90)}</td>
+                  <td className="py-3">{wire.awg}</td>
+                  <td className="py-3 tabular-nums">{amperes(wire)} A</td>
                 </tr>
               ))}
             </tbody>
