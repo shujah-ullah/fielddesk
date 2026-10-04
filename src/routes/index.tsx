@@ -84,7 +84,7 @@ function Home() {
           </article>
         </section>
 
-        <section className="fade-up mt-14">
+        <section id="reference" className="fade-up mt-14 scroll-mt-24">
           <h2 className="font-serif text-4xl">Where the numbers come from</h2>
           <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted">Each sheet names its source. This is the short list.</p>
           <ul className="mt-6 divide-y divide-line border-y border-line">
