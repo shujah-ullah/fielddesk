@@ -26,14 +26,6 @@ function num(value: number, digits = 0) {
   return value.toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits });
 }
 
-function ReportLink() {
-  return (
-    <Link to="/feedback" className="mt-4 inline-flex text-sm font-medium text-copper-deep underline underline-offset-4">
-      Report calculation
-    </Link>
-  );
-}
-
 export function MotorTool() {
   const [phase, setPhase] = useState<1 | 3>(3);
   const [hp, setHp] = useState("5");
@@ -50,27 +42,67 @@ export function MotorTool() {
     [phase, hp, volts, material, temp, ocpdPercent, overload, feet],
   );
   return (
-    <Sheet kicker="Article 430 · screening" title="Size the motor circuit." note="Full-load current comes from the published table, not the nameplate. Conductors are 125% of that current. The breaker is the table percentage, then the next standard size.">
+    <Sheet
+      kicker="Article 430 · screening"
+      title="Size the motor circuit."
+      note="Use table full-load current for the wire, the breaker, and the disconnect. Use the nameplate amperes for the overload relay. The overload line below uses the table so you can see the percentage. Replace it with the nameplate before you set the relay."
+    >
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
-        <Field label="Phase"><select className={control} value={phase} onChange={(e) => { const next = Number(e.target.value) as 1 | 3; setPhase(next); setVolts(next === 1 ? 230 : 460); setHp(next === 1 ? "1" : "5"); }}><option value={3}>Three-phase</option><option value={1}>Single-phase</option></select></Field>
-        <Field label="Horsepower"><select className={control} value={hp} onChange={(e) => setHp(e.target.value)}>{hpOptions.map((item) => <option key={item} value={item}>{item}</option>)}</select></Field>
-        <Field label="Voltage"><select className={control} value={volts} onChange={(e) => setVolts(Number(e.target.value))}>{voltages.map((item) => <option key={item} value={item}>{item} V</option>)}</select></Field>
-        <Field label="Conductor"><select className={control} value={`${material}-${temp}`} onChange={(e) => { const [m, t] = e.target.value.split("-"); setMaterial(m as "cu" | "al"); setTemp(t as "60" | "75"); }}><option value="cu-75">Copper, 75°C</option><option value="cu-60">Copper, 60°C</option><option value="al-75">Aluminum, 75°C</option><option value="al-60">Aluminum, 60°C</option></select></Field>
-        <Field label="Short-circuit device"><select className={control} value={ocpdPercent} onChange={(e) => setOcpdPercent(Number(e.target.value))}><option value={250}>Inverse-time breaker, 250%</option><option value={175}>Dual-element time-delay fuse, 175%</option><option value={300}>Nontime-delay fuse, 300%</option></select></Field>
-        <Field label="Overload basis"><select className={control} value={overload} onChange={(e) => setOverload(e.target.value as "sf" | "other")}><option value="sf">Service factor 1.15 or 40°C rise, 125%</option><option value="other">All other motors, 115%</option></select></Field>
-        <Field label="One-way length, feet"><input className={control} type="number" min={0} value={feet} onChange={(e) => setFeet(Number(e.target.value))} /></Field>
+        <Field label="Phase">
+          <select className={control} value={phase} onChange={(e) => { const next = Number(e.target.value) as 1 | 3; setPhase(next); setVolts(next === 1 ? 230 : 460); setHp(next === 1 ? "1" : "5"); }}>
+            <option value={3}>Three-phase, Table 430.250</option>
+            <option value={1}>Single-phase, Table 430.248</option>
+          </select>
+        </Field>
+        <Field label="Horsepower">
+          <select className={control} value={hp} onChange={(e) => setHp(e.target.value)}>
+            {hpOptions.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+        </Field>
+        <Field label="Voltage">
+          <select className={control} value={volts} onChange={(e) => setVolts(Number(e.target.value))}>
+            {voltages.map((item) => <option key={item} value={item}>{item} V</option>)}
+          </select>
+        </Field>
+        <Field label="Short-circuit device">
+          <select className={control} value={ocpdPercent} onChange={(e) => setOcpdPercent(Number(e.target.value))}>
+            <option value={250}>Inverse-time breaker, 250%</option>
+            <option value={175}>Dual-element time-delay fuse, 175%</option>
+            <option value={300}>Nontime-delay fuse, 300%</option>
+          </select>
+        </Field>
+        <Field label="Overload basis">
+          <select className={control} value={overload} onChange={(e) => setOverload(e.target.value as "sf" | "other")}>
+            <option value="sf">Service factor 1.15 or 40°C rise, 125%</option>
+            <option value="other">All other motors, 115%</option>
+          </select>
+        </Field>
+        <Field label="Conductor">
+          <select className={control} value={`${material}-${temp}`} onChange={(e) => { const [m, t] = e.target.value.split("-"); setMaterial(m as "cu" | "al"); setTemp(t as "60" | "75"); }}>
+            <option value="cu-75">Copper, 75°C column</option>
+            <option value="cu-60">Copper, 60°C column</option>
+            <option value="al-75">Aluminum, 75°C column</option>
+            <option value="al-60">Aluminum, 60°C column</option>
+          </select>
+        </Field>
+        <Field label="One-way length, feet">
+          <input className={control} type="number" min={0} value={feet} onChange={(e) => setFeet(Number(e.target.value))} />
+        </Field>
+        <p className="text-sm leading-relaxed text-muted">Single-phase rows in this table are 115 V and 230 V. 200 V, 208 V, 230 V, 460 V, and 575 V are three-phase.</p>
       </form>
       <Result>
         {"error" in result ? <p>{result.error}</p> : (
           <dl>
-            <Row label="Table full-load current" value={`${num(result.flc, 1)} A`} />
-            <Row label="Conductor ampacity, 125%" value={`${num(result.minAmpacity, 1)} A`} />
-            <Row label="Wire" value={result.wire ? `${result.wire.awg} AWG` : "Above table"} />
-            <Row label="Short-circuit device" value={result.ocpd ? `${result.ocpd} A` : "Above table"} />
-            <Row label="Overload maximum" value={`${num(result.overload, 1)} A`} />
-            <p className="mt-3 text-sm leading-relaxed text-muted">Article 430.32: 125% if the service factor is 1.15 or greater, or the temperature rise is 40°C. Otherwise 115%. Set the relay from nameplate amps, not the table.</p>
-            <Row label="Disconnect, 115%" value={`${num(result.disconnect, 1)} A`} />
-            <Row label="Voltage drop" value={result.dropPercent == null ? "—" : `${num(result.dropPercent, 2)}%`} />
+            <p className="mb-3 rounded-xl bg-pine-soft px-3 py-3 text-sm leading-relaxed text-pine">Branch circuit, planning size. The wire and the short-circuit device use table current, not the nameplate. The overload line uses table current so you can see the percentage. Use the nameplate before you set the relay.</p>
+            <Row label="Table FLC" value={`${num(result.flc, 1)} A`} />
+            <Row label="Minimum conductor ampacity, 125%" value={`${num(result.minAmpacity, 1)} A`} />
+            <Row label="Suggested conductor" value={result.wire ? `${result.wire.awg} AWG · ${ampacityOf(result.wire, material, temp)} A` : "Above table"} />
+            <Row label={`Short-circuit device, ${ocpdPercent}% then next standard`} value={result.ocpd ? `${result.ocpd} A` : "Above table"} />
+            <Row label="Calculated device before rounding" value={`${num(result.rawOcpd, 0)} A`} />
+            <Row label="Overload planning value" value={`${num(result.overload, 1)} A`} />
+            <p className="mt-3 text-sm leading-relaxed text-muted">430.22 sizes the wire at 125% of table current. 430.52 sets the short-circuit device, then the next standard size. 430.32 sets the overload at 125% when the service factor is 1.15 or the rise is 40°C, otherwise 115%.</p>
+            <Row label="Disconnect ampere rating, 115%" value={`${num(result.disconnect, 1)} A`} />
+            <Row label="Voltage drop at table FLC" value={result.drop == null ? "—" : `${num(result.drop, 2)} V · ${num(result.dropPercent ?? 0, 1)}%`} />
           </dl>
         )}
         <ReportLink />
@@ -88,7 +120,10 @@ export function DropTool() {
   const [material, setMaterial] = useState<"cu" | "al">("cu");
   const [temp, setTemp] = useState<"60" | "75">("75");
   const [continuous, setContinuous] = useState(true);
-  const result = useMemo(() => wireForDrop({ phase, amps, volts, feet, limit, material, temp, continuous }), [phase, amps, volts, feet, limit, material, temp, continuous]);
+  const result = useMemo(
+    () => wireForDrop({ phase, amps, volts, feet, limit, material, temp, continuous }),
+    [phase, amps, volts, feet, limit, material, temp, continuous],
+  );
   return (
     <Sheet kicker="Voltage drop · screening" title="Pick a wire that also holds the drop." note="Drop uses 2 × K × I × D / cm for single-phase and 1.732 for three-phase. K is 12.9 copper and 21.2 aluminum. D is one-way feet.">
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
@@ -127,7 +162,10 @@ export function ServiceTool() {
   const [heat, setHeat] = useState(0);
   const [cool, setCool] = useState(6000);
   const [motor, setMotor] = useState(1200);
-  const result = useMemo(() => serviceLoad({ sqft, smallAppliance, laundry, fixedVa, fixedCount, dryer, range, heat, cool, motor }), [sqft, smallAppliance, laundry, fixedVa, fixedCount, dryer, range, heat, cool, motor]);
+  const result = useMemo(
+    () => serviceLoad({ sqft, smallAppliance, laundry, fixedVa, fixedCount, dryer, range, heat, cool, motor }),
+    [sqft, smallAppliance, laundry, fixedVa, fixedCount, dryer, range, heat, cool, motor],
+  );
   return (
     <Sheet kicker="Article 220 · screening" title="Estimate the dwelling service." note="Standard-method shape: 3 VA per square foot, small-appliance circuits, laundry, then the 3,000 VA / 35% split. Range and dryer use the VA you enter, not the demand tables.">
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
@@ -164,15 +202,23 @@ export function WireTool() {
     <Sheet kicker="Table 310.16 · screening" title="Read the ampacity column." note="Ordinary 14, 12, and 10 AWG copper are limited to 15 A, 20 A, and 30 A overcurrent devices. Motor circuits are one case where Article 430 sets the short-circuit device instead.">
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
         <Field label="Material"><select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}><option value="cu">Copper</option><option value="al">Aluminum</option></select></Field>
-        <Field label="Column"><select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75")}><option value={75}>75°C</option><option value={60}>60°C</option></select></Field>
+        <Field label="Column"><select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75")}><option value="75">75°C</option><option value="60">60°C</option></select></Field>
       </form>
       <Result>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-muted"><th className="py-2">Size</th><th className="py-2">Ampacity</th></tr></thead>
+            <thead>
+              <tr className="text-left text-muted">
+                <th className="py-2">Size</th>
+                <th className="py-2">Ampacity</th>
+              </tr>
+            </thead>
             <tbody>
               {rows.map((wire) => (
-                <tr key={wire.awg} className="border-t border-line"><td className="py-2">{wire.awg} AWG</td><td className="py-2 tabular-nums">{ampacityOf(wire, material, temp)} A</td></tr>
+                <tr key={wire.awg} className="border-t border-line">
+                  <td className="py-2">{wire.awg} AWG</td>
+                  <td className="py-2 tabular-nums">{ampacityOf(wire, material, temp)} A</td>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -180,6 +226,14 @@ export function WireTool() {
         <ReportLink />
       </Result>
     </Sheet>
+  );
+}
+
+function ReportLink() {
+  return (
+    <Link to="/feedback" className="mt-4 inline-flex text-base font-medium text-copper-deep underline underline-offset-4">
+      Report calculation
+    </Link>
   );
 }
 
@@ -195,5 +249,5 @@ function Sheet({ kicker, title, note, children }: { kicker: string; title: strin
 }
 
 function Result({ children }: { children: ReactNode }) {
-  return <section className="order-1 rounded-2xl border border-line bg-surface p-4 sm:p-5 lg:order-2 lg:sticky lg:top-24">{children}</section>;
+  return <section className="order-1 rounded-2xl lg:order-2 border border-line bg-surface p-4 sm:p-5 lg:order-2 lg:sticky lg:top-24">{children}</section>;
 }
