@@ -4,11 +4,11 @@ import { SiteShell } from "@/components/site-shell";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FieldDesk — calculators for technicians, engineers, and operators" },
+      { title: "Electrical and HVAC field calculators — FieldDesk" },
       {
         name: "description",
         content:
-          "FieldDesk holds AmpDesk and AirDesk. AmpDesk sizes motor circuits, voltage drop, service load, and wire. AirDesk sizes cooling load, airflow, and duct.",
+          "Screen a motor circuit, voltage drop, dwelling service, wire amperes, or a duct size before you order material. Planning sheets, not a permit.",
       },
     ],
   }),
@@ -32,10 +32,10 @@ function Home() {
         <section className="fade-up max-w-3xl">
           <p className="text-sm font-semibold tracking-widest text-copper-deep uppercase">Field calculators</p>
           <h1 className="mt-4 font-serif text-5xl leading-[1.05] sm:text-7xl">
-            Calculators for technicians, engineers, and operators.
+            Electrical and HVAC calculators for the job site.
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-ink">
-            FieldDesk is two desks on one site. Screen the job before you order the wire or the duct.
+            For electricians, HVAC techs, and operators checking a number before they order the wire or the duct.
           </p>
           <p className="mt-3 max-w-2xl text-lg leading-relaxed text-muted">
             These are planning sheets. They are not a permit, and they do not replace the nameplate or the person on the job.
