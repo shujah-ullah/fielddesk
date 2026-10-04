@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @theme {
   --font-sans: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
@@ -13,6 +14,13 @@
   --color-pine: #1e4a3a;
   --color-pine-soft: #e7f0eb;
   --color-warn-soft: #f8ece4;
+  --color-background: #fffcf8;
+  --color-foreground: #1c1915;
+  --color-popover: #fffcf8;
+  --color-popover-foreground: #1c1915;
+  --color-accent: #f3efe6;
+  --color-accent-foreground: #8c3d1c;
+  --color-muted-foreground: #5c564c;
   --radius-card: 1rem;
 }
 
