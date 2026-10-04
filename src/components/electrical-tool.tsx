@@ -278,12 +278,7 @@ function ReportLink() {
 }
 
 function CalcHead() {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <h2 className="text-lg font-semibold">Calculate</h2>
-      <a href="#result" className="inline-flex h-9 items-center rounded-full bg-ink px-3 text-sm font-medium text-paper">Calculate</a>
-    </div>
-  );
+  return <h2 className="text-lg font-semibold">Input values to calculate</h2>;
 }
 
 function Sheet({ kicker, title, note, steps, children }: { kicker: string; title: string; note: string; steps: string[]; children: ReactNode }) {
@@ -312,5 +307,10 @@ function How({ steps }: { steps: string[] }) {
 }
 
 function Result({ children }: { children: ReactNode }) {
-  return <section id="result" className="order-2 scroll-mt-28 rounded-2xl border border-line bg-surface p-4 sm:p-5 lg:sticky lg:top-24">{children}</section>;
+  return (
+    <section id="result" className="order-2 scroll-mt-28 rounded-2xl border border-line bg-surface p-4 sm:p-5 lg:sticky lg:top-24">
+      <h2 className="mb-3 text-lg font-semibold">Calculated results</h2>
+      {children}
+    </section>
+  );
 }
