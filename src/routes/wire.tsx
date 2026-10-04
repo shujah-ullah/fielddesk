@@ -3,6 +3,6 @@ import { WireTool } from "@/components/electrical-tool";
 import { SiteShell } from "@/components/site-shell";
 
 export const Route = createFileRoute("/wire")({
-  head: () => ({ meta: [{ title: "Wire ampacity table — FieldDesk" }] }),
+  head: () => ({ meta: [{ title: "Wire amperes — FieldDesk" }] }),
   component: () => <SiteShell><WireTool /></SiteShell>,
 });
