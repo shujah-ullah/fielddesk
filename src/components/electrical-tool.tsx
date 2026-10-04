@@ -46,6 +46,14 @@ export function MotorTool() {
       kicker="Article 430 · screening"
       title="Size the motor circuit."
       note="Use table full-load current for the wire, the breaker, and the disconnect. Use the nameplate amperes for the overload relay. The overload line below uses the table so you can see the percentage. Replace it with the nameplate before you set the relay."
+      steps={[
+        "You pick the motor: one phase or three, the horsepower, and the voltage.",
+        "The sheet looks up that motor’s full-load current in the table. The wire is sized from this number, not from the nameplate.",
+        "It multiplies that current by 1.25. That is the smallest ampacity the wire must have.",
+        "It multiplies the same current by the breaker or fuse percent you picked, then rounds up to the next standard size.",
+        "It shows an overload so you can see the percent. Set the real relay from the nameplate amperes, not from this line.",
+        "It checks how many volts you lose over the one-way length you typed.",
+      ]}
     >
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
         <Field label="Phase">
@@ -125,7 +133,18 @@ export function DropTool() {
     [phase, amps, volts, feet, limit, material, temp, continuous],
   );
   return (
-    <Sheet kicker="Voltage drop · screening" title="Pick a wire that also holds the drop." note="Drop uses 2 × K × I × D / cm for single-phase and 1.732 for three-phase. K is 12.9 copper and 21.2 aluminum. D is one-way feet.">
+    <Sheet
+      kicker="Voltage drop · screening"
+      title="Pick a wire that also holds the drop."
+      note="Drop uses 2 × K × I × D / cm for single-phase and 1.732 for three-phase. K is 12.9 copper and 21.2 aluminum. D is one-way feet."
+      steps={[
+        "You enter the load in amps, the voltage, and how far the wire runs. Distance is one way.",
+        "If the load runs for three hours or more, leave the continuous box on. The sheet adds 25% before it picks a wire.",
+        "It finds the smallest wire that can carry those amps.",
+        "It then checks how much voltage that wire loses on the run.",
+        "If the loss is over the limit you set, it steps up to a larger wire until the loss is inside the limit, or until the table runs out.",
+      ]}
+    >
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
         <Field label="Phase"><select className={control} value={phase} onChange={(e) => setPhase(Number(e.target.value) as 1 | 3)}><option value={1}>Single-phase</option><option value={3}>Three-phase</option></select></Field>
         <Field label="Load, amps"><input className={control} type="number" min={1} value={amps} onChange={(e) => setAmps(Number(e.target.value))} /></Field>
@@ -167,7 +186,19 @@ export function ServiceTool() {
     [sqft, smallAppliance, laundry, fixedVa, fixedCount, dryer, range, heat, cool, motor],
   );
   return (
-    <Sheet kicker="Article 220 · screening" title="Estimate the dwelling service." note="Standard-method shape: 3 VA per square foot, small-appliance circuits, laundry, then the 3,000 VA / 35% split. Range and dryer use the VA you enter, not the demand tables.">
+    <Sheet
+      kicker="Article 220 · screening"
+      title="Estimate the dwelling service."
+      note="Standard-method shape: 3 VA per square foot, small-appliance circuits, laundry, then the 3,000 VA / 35% split. Range and dryer use the VA you enter, not the demand tables."
+      steps={[
+        "You enter the floor area and the large loads in the house.",
+        "Lighting starts at 3 VA for each square foot, plus 1,500 VA for each small-appliance circuit and the laundry circuit if you leave it on.",
+        "The first 3,000 VA of that group is counted in full. Everything above 3,000 VA is counted at 35%.",
+        "Fixed appliances, the dryer, and the range are added from the VA you type.",
+        "Heating and cooling are not both added. The sheet keeps the larger one, then adds the largest motor.",
+        "The total is turned into amps at 240 volts, then a suggested service size.",
+      ]}
+    >
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
         <Field label="Floor area, square feet"><input className={control} type="number" min={1} value={sqft} onChange={(e) => setSqft(Number(e.target.value))} /></Field>
         <Field label="Small-appliance circuits"><input className={control} type="number" min={2} value={smallAppliance} onChange={(e) => setSmallAppliance(Number(e.target.value))} /></Field>
@@ -199,7 +230,17 @@ export function WireTool() {
   const [temp, setTemp] = useState<"60" | "75">("75");
   const rows = WIRES.filter((wire) => ampacityOf(wire, material, temp) != null);
   return (
-    <Sheet kicker="Table 310.16 · screening" title="Read the ampacity column." note="Ordinary 14, 12, and 10 AWG copper are limited to 15 A, 20 A, and 30 A overcurrent devices. Motor circuits are one case where Article 430 sets the short-circuit device instead.">
+    <Sheet
+      kicker="Table 310.16 · screening"
+      title="Read the ampacity column."
+      note="Ordinary 14, 12, and 10 AWG copper are limited to 15 A, 20 A, and 30 A overcurrent devices. Motor circuits are one case where Article 430 sets the short-circuit device instead."
+      steps={[
+        "This page does not size a job. It only shows the ampacity column.",
+        "Pick copper or aluminum, then the 60°C or 75°C column.",
+        "Each row is a wire size and how many amps that size can carry in the column you picked.",
+        "On a normal circuit, 14 AWG copper stops at 15 A, 12 AWG at 20 A, and 10 AWG at 30 A. A motor circuit is one case where the breaker can be higher than that.",
+      ]}
+    >
       <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
         <Field label="Material"><select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}><option value="cu">Copper</option><option value="al">Aluminum</option></select></Field>
         <Field label="Column"><select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75")}><option value="75">75°C</option><option value="60">60°C</option></select></Field>
@@ -237,14 +278,28 @@ function ReportLink() {
   );
 }
 
-function Sheet({ kicker, title, note, children }: { kicker: string; title: string; note: string; children: ReactNode }) {
+function Sheet({ kicker, title, note, steps, children }: { kicker: string; title: string; note: string; steps: string[]; children: ReactNode }) {
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 pb-10">
       <p className="text-xs font-medium tracking-widest text-copper-deep uppercase">{kicker}</p>
       <h1 className="mt-2 max-w-2xl text-3xl leading-tight sm:text-5xl sm:leading-none">{title}</h1>
       <p className="mt-4 max-w-2xl rounded-xl border border-line bg-warn-soft px-4 py-3 text-sm leading-relaxed text-copper-deep">{note}</p>
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-[22rem_1fr]">{children}</div>
+      <How steps={steps} />
     </main>
+  );
+}
+
+function How({ steps }: { steps: string[] }) {
+  return (
+    <section className="mt-10 max-w-3xl">
+      <h2 className="font-serif text-3xl">What this sheet does</h2>
+      <ol className="mt-4 list-decimal space-y-3 pl-6 text-lg leading-relaxed">
+        {steps.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
