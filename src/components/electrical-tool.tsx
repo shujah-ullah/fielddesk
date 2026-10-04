@@ -53,7 +53,7 @@ export function MotorTool() {
   return (
     <Sheet
       kicker="Article 430 · screening"
-      title="Size the motor circuit."
+      title="Size the motor branch circuit."
       note="Use table full-load current for the wire, the breaker, and the disconnect. Use the nameplate amperes for the overload relay. The overload line below uses the table so you can see the percentage. Replace it with the nameplate before you set the relay."
       steps={[
         "You pick the motor: one phase or three, the horsepower, and the voltage.",
@@ -143,7 +143,7 @@ export function DropTool() {
   return (
     <Sheet
       kicker="Voltage drop · screening"
-      title="Pick a wire that also holds the drop."
+      title="Check voltage drop on a one-way run."
       note="Drop uses 2 × K × I × D / cm for single-phase and 1.732 for three-phase. K is 12.9 copper and 21.2 aluminum. D is one-way feet."
       steps={[
         "You enter the load in amps, the voltage, and how far the wire runs. Distance is one way.",
@@ -197,7 +197,7 @@ export function ServiceTool() {
   return (
     <Sheet
       kicker="Article 220 · screening"
-      title="Estimate the dwelling service."
+      title="Estimate the dwelling service load."
       note="Standard-method shape: 3 VA per square foot, small-appliance circuits, laundry, then the 3,000 VA / 35% split. Range and dryer use the VA you enter, not the demand tables."
       steps={[
         "You enter the floor area and the large loads in the house.",
@@ -246,7 +246,7 @@ export function WireTool() {
   return (
     <Sheet
       kicker="Table 310.16 · screening"
-      title="Read the ampere column."
+      title="Read the Table 310.16 ampere column."
       note="Pick the temperature column. Most breakers and lugs are 60°C or 75°C, so the circuit is usually limited to those. 90°C is the insulation rating."
       steps={[
         "This page does not size a job. It shows how many amperes each wire can carry.",
