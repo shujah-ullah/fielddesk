@@ -2,13 +2,14 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 const LINKS = [
-  { to: "/", label: "Home" },
-  { to: "/motor", label: "Motor" },
-  { to: "/voltage-drop", label: "Drop" },
-  { to: "/service", label: "Service" },
-  { to: "/wire", label: "Wire" },
-  { to: "/hvac", label: "HVAC" },
-  { to: "/feedback", label: "Feedback" },
+  { to: "/", label: "Home", hash: undefined },
+  { to: "/motor", label: "Motor sizing", hash: undefined },
+  { to: "/voltage-drop", label: "Voltage drop", hash: undefined },
+  { to: "/service", label: "Service load", hash: undefined },
+  { to: "/wire", label: "Wire ampacity", hash: undefined },
+  { to: "/hvac", label: "HVAC load", hash: undefined },
+  { to: "/feedback", label: "Feedback", hash: undefined },
+  { to: "/", label: "Reference", hash: "reference" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -26,7 +27,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="hidden gap-5 text-base lg:flex">
             {LINKS.map((link) => (
-              <Link key={link.to} to={link.to} className={path === link.to ? "font-semibold text-copper-deep" : "text-ink"}>
+              <Link
+                key={link.label}
+                to={link.to}
+                hash={link.hash}
+                className={path === link.to && !link.hash ? "font-semibold text-copper-deep" : "text-ink"}
+              >
                 {link.label}
               </Link>
             ))}
@@ -34,7 +40,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </div>
         <nav className="flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden">
           {LINKS.map((link) => (
-            <Link key={link.to} to={link.to} className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${path === link.to ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}>
+            <Link
+              key={link.label}
+              to={link.to}
+              hash={link.hash}
+              className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${path === link.to && !link.hash ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
+            >
               {link.label}
             </Link>
           ))}
