@@ -17,27 +17,22 @@
 }
 
 @keyframes result-pop {
-  from { opacity: 0.35; transform: translateY(4px); }
+  from { opacity: 0.35; transform: translateY(6px); }
   to { opacity: 1; transform: none; }
 }
-.result-pop {
-  animation: result-pop 0.28s ease;
-}
+.result-pop { animation: result-pop 0.45s ease; }
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
 }
-.fade-up {
-  animation: fade-up 0.45s ease both;
-}
-.fade-up-delay-1 { animation-delay: 0.08s; }
-.fade-up-delay-2 { animation-delay: 0.16s; }
-.fade-up-delay-3 { animation-delay: 0.24s; }
+.fade-up { animation: fade-up 0.5s ease both; }
+.fade-up-delay-1 { animation-delay: 0.06s; }
+.fade-up-delay-2 { animation-delay: 0.12s; }
+.fade-up-delay-3 { animation-delay: 0.18s; }
+.fade-up-delay-4 { animation-delay: 0.24s; }
 
 @media (prefers-reduced-motion: reduce) {
   .result-pop,
-  .fade-up {
-    animation: none;
-  }
+  .fade-up { animation: none; }
 }
