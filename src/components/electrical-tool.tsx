@@ -55,7 +55,8 @@ export function MotorTool() {
         "It checks how many volts you lose over the one-way length you typed.",
       ]}
     >
-      <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
+      <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
+        <CalcHead />
         <Field label="Phase">
           <select className={control} value={phase} onChange={(e) => { const next = Number(e.target.value) as 1 | 3; setPhase(next); setVolts(next === 1 ? 230 : 460); setHp(next === 1 ? "1" : "5"); }}>
             <option value={3}>Three-phase, Table 430.250</option>
@@ -145,7 +146,8 @@ export function DropTool() {
         "If the loss is over the limit you set, it steps up to a larger wire until the loss is inside the limit, or until the table runs out.",
       ]}
     >
-      <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
+      <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
+        <CalcHead />
         <Field label="Phase"><select className={control} value={phase} onChange={(e) => setPhase(Number(e.target.value) as 1 | 3)}><option value={1}>Single-phase</option><option value={3}>Three-phase</option></select></Field>
         <Field label="Load, amps"><input className={control} type="number" min={1} value={amps} onChange={(e) => setAmps(Number(e.target.value))} /></Field>
         <Field label="Voltage"><input className={control} type="number" min={1} value={volts} onChange={(e) => setVolts(Number(e.target.value))} /></Field>
@@ -199,7 +201,8 @@ export function ServiceTool() {
         "The total is turned into amps at 240 volts, then a suggested service size.",
       ]}
     >
-      <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
+      <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
+        <CalcHead />
         <Field label="Floor area, square feet"><input className={control} type="number" min={1} value={sqft} onChange={(e) => setSqft(Number(e.target.value))} /></Field>
         <Field label="Small-appliance circuits"><input className={control} type="number" min={2} value={smallAppliance} onChange={(e) => setSmallAppliance(Number(e.target.value))} /></Field>
         <label className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" className="size-4 accent-copper" checked={laundry} onChange={(e) => setLaundry(e.target.checked)} />Laundry circuit, 1,500 VA</label>
@@ -241,7 +244,8 @@ export function WireTool() {
         "On a normal circuit, 14 AWG copper stops at 15 A, 12 AWG at 20 A, and 10 AWG at 30 A. A motor circuit is one case where the breaker can be higher than that.",
       ]}
     >
-      <form className="order-2 grid gap-3 lg:order-1" onSubmit={(event) => event.preventDefault()}>
+      <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
+        <CalcHead />
         <Field label="Material"><select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}><option value="cu">Copper</option><option value="al">Aluminum</option></select></Field>
         <Field label="Column"><select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75")}><option value="75">75°C</option><option value="60">60°C</option></select></Field>
       </form>
@@ -273,6 +277,15 @@ function ReportLink() {
   );
 }
 
+function CalcHead() {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <h2 className="text-lg font-semibold">Calculate</h2>
+      <a href="#result" className="inline-flex h-9 items-center rounded-full bg-ink px-3 text-sm font-medium text-paper">Calculate</a>
+    </div>
+  );
+}
+
 function Sheet({ kicker, title, note, steps, children }: { kicker: string; title: string; note: string; steps: string[]; children: ReactNode }) {
   return (
     <main className="mx-auto max-w-6xl px-4 py-6 pb-10">
@@ -299,5 +312,5 @@ function How({ steps }: { steps: string[] }) {
 }
 
 function Result({ children }: { children: ReactNode }) {
-  return <section className="order-1 rounded-2xl lg:order-2 border border-line bg-surface p-4 sm:p-5 lg:order-2 lg:sticky lg:top-24">{children}</section>;
+  return <section id="result" className="order-2 scroll-mt-28 rounded-2xl border border-line bg-surface p-4 sm:p-5 lg:sticky lg:top-24">{children}</section>;
 }
