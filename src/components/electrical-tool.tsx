@@ -49,7 +49,7 @@ export function MotorTool() {
       steps={[
         "You pick the motor: one phase or three, the horsepower, and the voltage.",
         "The sheet looks up that motor’s full-load current in the table. The wire is sized from this number, not from the nameplate.",
-        "It multiplies that current by 1.25. That is the smallest ampacity the wire must have.",
+        "It multiplies that current by 1.25. That is the smallest number of amperes the wire must carry.",
         "It multiplies the same current by the breaker or fuse percent you picked, then rounds up to the next standard size.",
         "It shows an overload so you can see the percent. Set the real relay from the nameplate amperes, not from this line.",
         "It checks how many volts you lose over the one-way length you typed.",
@@ -103,7 +103,7 @@ export function MotorTool() {
           <dl>
             <p className="mb-3 rounded-xl bg-pine-soft px-3 py-3 text-sm leading-relaxed text-pine">Branch circuit, planning size. The wire and the short-circuit device use table current, not the nameplate. The overload line uses table current so you can see the percentage. Use the nameplate before you set the relay.</p>
             <Row label="Table FLC" value={`${num(result.flc, 1)} A`} />
-            <Row label="Minimum conductor ampacity, 125%" value={`${num(result.minAmpacity, 1)} A`} />
+            <Row label="Minimum conductor amperes, 125%" value={`${num(result.minAmpacity, 1)} A`} />
             <Row label="Suggested conductor" value={result.wire ? `${result.wire.awg} AWG · ${ampacityOf(result.wire, material, temp)} A` : "Above table"} />
             <Row label={`Short-circuit device, ${ocpdPercent}% then next standard`} value={result.ocpd ? `${result.ocpd} A` : "Above table"} />
             <Row label="Calculated device before rounding" value={`${num(result.rawOcpd, 0)} A`} />
@@ -157,8 +157,8 @@ export function DropTool() {
       <Result>
         {"error" in result ? <p>{result.error}</p> : (
           <dl>
-            <Row label="Ampacity target" value={`${num(result.required, 1)} A`} />
-            <Row label="Ampacity-only wire" value={result.ampWire ? `${result.ampWire.awg} AWG` : "—"} />
+            <Row label="Amperes the wire must carry" value={`${num(result.required, 1)} A`} />
+            <Row label="Wire for those amperes" value={result.ampWire ? `${result.ampWire.awg} AWG` : "—"} />
             <Row label="Wire that also checks drop" value={`${result.chosen.awg} AWG`} />
             <Row label="Estimated drop" value={`${num(result.dropVolts, 2)} V · ${num(result.dropPercent, 2)}%`} />
             <Row label="Within the limit" value={result.within ? "Yes" : "No. Shorten the run or raise the limit."} />
@@ -232,12 +232,12 @@ export function WireTool() {
   return (
     <Sheet
       kicker="Table 310.16 · screening"
-      title="Read the ampacity column."
+      title="Read the ampere column."
       note="Ordinary 14, 12, and 10 AWG copper are limited to 15 A, 20 A, and 30 A overcurrent devices. Motor circuits are one case where Article 430 sets the short-circuit device instead."
       steps={[
-        "This page does not size a job. It only shows the ampacity column.",
+        "This page does not size a job. It only shows how many amperes each wire can carry.",
         "Pick copper or aluminum, then the 60°C or 75°C column.",
-        "Each row is a wire size and how many amps that size can carry in the column you picked.",
+        "Each row is a wire size and the amperes that size can carry in the column you picked.",
         "On a normal circuit, 14 AWG copper stops at 15 A, 12 AWG at 20 A, and 10 AWG at 30 A. A motor circuit is one case where the breaker can be higher than that.",
       ]}
     >
@@ -248,12 +248,7 @@ export function WireTool() {
       <Result>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-muted">
-                <th className="py-2">Size</th>
-                <th className="py-2">Ampacity</th>
-              </tr>
-            </thead>
+            <thead><tr className="text-left text-muted"><th className="py-2">Size</th><th className="py-2">Amperes</th></tr></thead>
             <tbody>
               {rows.map((wire) => (
                 <tr key={wire.awg} className="border-t border-line">
