@@ -9,7 +9,7 @@ const MOTOR = [
   { to: "/wire", label: "Wire amperes" },
 ] as const;
 
-const trigger = "h-11 cursor-pointer rounded-full px-3 text-base font-medium text-ink focus:bg-paper focus:text-ink data-[state=open]:bg-ink data-[state=open]:text-paper";
+const trigger = "h-11 cursor-pointer rounded-full px-4 text-base font-medium text-ink hover:bg-[#f6e6da] hover:text-copper-deep focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-ink";
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (state) => state.location.pathname });
@@ -26,7 +26,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="block text-sm text-muted">Electrical and HVAC</span>
             </span>
           </Link>
-          <Menubar className="h-auto gap-1 border-0 bg-transparent p-0 shadow-none">
+          <Menubar className="h-auto gap-1 rounded-full border border-line bg-[#fff8f2] px-1.5 py-1 shadow-none">
             <MenubarMenu>
               <MenubarTrigger asChild>
                 <Link to="/" className={`${trigger} ${path === "/" ? "font-semibold text-copper-deep" : ""}`}>Home</Link>
@@ -34,9 +34,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </MenubarMenu>
             <MenubarMenu>
               <MenubarTrigger className={`${trigger} ${motorOn ? "font-semibold text-copper-deep" : ""}`}>Motor</MenubarTrigger>
-              <MenubarContent className="rounded-2xl border-line bg-surface p-2 text-ink">
+              <MenubarContent className="rounded-2xl border-line bg-[#fff8f2] p-2 text-ink">
                 {MOTOR.map((item) => (
-                  <MenubarItem key={item.to} asChild className="rounded-xl px-3 py-2.5 text-base focus:bg-paper focus:text-ink">
+                  <MenubarItem key={item.to} asChild className="rounded-xl px-3 py-2.5 text-base hover:bg-[#f6e6da] hover:text-copper-deep focus:bg-[#f6e6da] focus:text-copper-deep data-[state=open]:bg-transparent">
                     <Link to={item.to} className={path === item.to ? "font-semibold text-copper-deep" : ""}>{item.label}</Link>
                   </MenubarItem>
                 ))}
