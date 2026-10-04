@@ -2,14 +2,13 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 const LINKS = [
-  { to: "/", label: "Home", hash: undefined },
-  { to: "/motor", label: "Motor sizing", hash: undefined },
-  { to: "/voltage-drop", label: "Voltage drop", hash: undefined },
-  { to: "/service", label: "Service load", hash: undefined },
-  { to: "/wire", label: "Wire ampacity", hash: undefined },
-  { to: "/hvac", label: "HVAC load", hash: undefined },
-  { to: "/feedback", label: "Feedback", hash: undefined },
-  { to: "/", label: "Reference", hash: "reference" },
+  { to: "/", label: "Home" },
+  { to: "/motor", label: "Motor sizing" },
+  { to: "/voltage-drop", label: "Voltage drop" },
+  { to: "/service", label: "Service load" },
+  { to: "/wire", label: "Wire ampacity" },
+  { to: "/hvac", label: "HVAC load" },
+  { to: "/feedback", label: "Feedback" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -28,10 +27,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <nav className="hidden gap-5 text-base lg:flex">
             {LINKS.map((link) => (
               <Link
-                key={link.label}
+                key={link.to}
                 to={link.to}
-                hash={link.hash}
-                className={path === link.to && !link.hash ? "font-semibold text-copper-deep" : "text-ink"}
+                className={path === link.to ? "font-semibold text-copper-deep" : "text-ink"}
               >
                 {link.label}
               </Link>
@@ -41,10 +39,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <nav className="flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden">
           {LINKS.map((link) => (
             <Link
-              key={link.label}
+              key={link.to}
               to={link.to}
-              hash={link.hash}
-              className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${path === link.to && !link.hash ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
+              className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${path === link.to ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
             >
               {link.label}
             </Link>
