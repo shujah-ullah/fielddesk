@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
 
-const FORM_EMBED = "";
+const FORM_URL = "https://docs.google.com/forms/d/10WFyzyrMaa4l9x0SITptJZCOIxRF0XEOleOeWtBBDBU/viewform";
+const FORM_EMBED = `${FORM_URL}?embedded=true`;
 
 export const Route = createFileRoute("/feedback")({
   head: () => ({ meta: [{ title: "Field check — FieldDesk" }] }),
@@ -20,11 +21,8 @@ function FeedbackPage() {
           <li>1,800 sq ft dwelling service with the sample loads.</li>
           <li>240 sq ft room, Zone 3, 8 ft ceiling, then the duct.</li>
         </ol>
-        {FORM_EMBED ? (
-          <iframe title="FieldDesk field check" src={FORM_EMBED} className="mt-6 h-[980px] w-full rounded-2xl border border-line bg-surface" />
-        ) : (
-          <p className="mt-6 rounded-xl border border-line bg-warn-soft px-4 py-3 text-sm text-copper-deep">The form link is not connected yet. Paste the Google Form embed address into this page, then the sheet will collect replies.</p>
-        )}
+        <a href={FORM_URL} target="_blank" rel="noreferrer" className="mt-5 inline-flex h-11 items-center rounded-full bg-ink px-4 text-sm font-medium text-paper">Open the form</a>
+        <iframe title="FieldDesk field check" src={FORM_EMBED} className="mt-6 h-[980px] w-full rounded-2xl border border-line bg-surface" />
       </main>
     </SiteShell>
   );
