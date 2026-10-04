@@ -58,7 +58,11 @@ export function FieldTool() {
       <h1 className="mt-2 text-3xl leading-tight sm:text-5xl">Size the room, then the duct.</h1>
       <p className="mt-4 rounded-xl border border-line bg-warn-soft px-4 py-3 text-sm text-copper-deep">Planning numbers only. Not a Manual J or Manual D permit calculation.</p>
       <div className="mt-5 grid items-start gap-4 lg:grid-cols-[22rem_1fr]">
-        <form className="order-2 grid gap-4 lg:order-1" onSubmit={(event) => event.preventDefault()}>
+        <form className="order-1 grid gap-4" onSubmit={(event) => event.preventDefault()}>
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold">Calculate</h2>
+            <a href="#result" className="inline-flex h-9 items-center rounded-full bg-ink px-3 text-sm font-medium text-paper">Calculate</a>
+          </div>
           <section className="rounded-2xl border border-line bg-surface p-4">
             <h2 className="flex items-center gap-2 text-2xl"><ThermometerSun className="size-5 text-copper" aria-hidden="true" />Cooling load</h2>
             <div className="mt-3 grid gap-3">
@@ -90,7 +94,7 @@ export function FieldTool() {
             </div>
           </section>
         </form>
-        <section className="order-1 grid gap-4 lg:order-2 lg:sticky lg:top-24">
+        <section id="result" className="order-2 grid scroll-mt-28 gap-4 lg:sticky lg:top-24">
           <article className="rounded-2xl border border-line bg-surface p-4">
             <p className="text-sm text-muted">Cooling</p>
             <p key={load.coolBtu} className="result-pop mt-1 font-serif text-4xl tabular-nums sm:text-5xl">{formatNum(load.coolBtu)}</p>
