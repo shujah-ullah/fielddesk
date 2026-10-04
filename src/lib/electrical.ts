@@ -153,7 +153,7 @@ export function wireForDrop(input: {
   });
   const chosen = candidates.find((wire) => (voltageDrop(input.phase, input.material, input.amps, input.feet, wire.cm) / input.volts) * 100 <= input.limit)
     ?? candidates[candidates.length - 1];
-  if (!chosen) return { error: "No conductor in this table meets the ampacity." as const };
+  if (!chosen) return { error: "No conductor in this table can carry these amperes." as const };
   const dropVolts = voltageDrop(input.phase, input.material, input.amps, input.feet, chosen.cm);
   return {
     required,
