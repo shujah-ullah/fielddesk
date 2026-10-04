@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --color-paper: #f3efe6;
+  --color-surface: #fffcf8;
+  --color-ink: #1c1915;
+  --color-muted: #5c564c;
+  --color-line: #ddd4c6;
+  --color-copper: #b4532a;
+  --color-copper-deep: #8c3d1c;
+  --color-pine: #1e4a3a;
+  --color-pine-soft: #e7f0eb;
+  --color-warn-soft: #f8ece4;
+  --radius-card: 1rem;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    text-wrap: balance;
+  }
+}
+
+@keyframes result-pop {
+  from { opacity: 0.35; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.result-pop {
+  animation: result-pop 0.28s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .result-pop { animation: none; }
+}
