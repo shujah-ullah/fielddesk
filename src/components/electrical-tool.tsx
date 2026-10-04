@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { FLC_1PH, FLC_3PH, WIRES, ampacityOf, motorSizing, serviceLoad, wireForDrop } from "@/lib/electrical";
 
 const control = "h-11 w-full rounded-xl border border-line bg-surface px-3 text-base text-ink outline-none focus:border-copper";
@@ -23,6 +24,14 @@ function Row({ label, value }: { label: string; value: string }) {
 
 function num(value: number, digits = 0) {
   return value.toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits });
+}
+
+function ReportLink() {
+  return (
+    <Link to="/feedback" className="mt-4 inline-flex text-sm font-medium text-copper-deep underline underline-offset-4">
+      Report calculation
+    </Link>
+  );
 }
 
 export function MotorTool() {
@@ -64,6 +73,7 @@ export function MotorTool() {
             <Row label="Voltage drop" value={result.dropPercent == null ? "—" : `${num(result.dropPercent, 2)}%`} />
           </dl>
         )}
+        <ReportLink />
       </Result>
     </Sheet>
   );
@@ -100,6 +110,7 @@ export function DropTool() {
             <Row label="Within the limit" value={result.within ? "Yes" : "No. Shorten the run or raise the limit."} />
           </dl>
         )}
+        <ReportLink />
       </Result>
     </Sheet>
   );
@@ -139,6 +150,7 @@ export function ServiceTool() {
           <Row label="Calculated load" value={`${num(result.total)} VA · ${num(result.amps240, 1)} A`} />
           <Row label="Suggested service" value={`${result.service} A`} />
         </dl>
+        <ReportLink />
       </Result>
     </Sheet>
   );
@@ -165,6 +177,7 @@ export function WireTool() {
             </tbody>
           </table>
         </div>
+        <ReportLink />
       </Result>
     </Sheet>
   );
