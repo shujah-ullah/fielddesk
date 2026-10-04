@@ -1,18 +1,22 @@
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
 
-const LINKS = [
-  { to: "/", label: "Home" },
+const MOTOR = [
   { to: "/motor", label: "Motor sizing" },
   { to: "/voltage-drop", label: "Voltage drop" },
   { to: "/service", label: "Service load" },
-  { to: "/wire", label: "Wire ampacity" },
-  { to: "/hvac", label: "HVAC load" },
-  { to: "/feedback", label: "Feedback" },
+  { to: "/wire", label: "Wire amperes" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const path = useRouterState({ select: (state) => state.location.pathname });
+  const [open, setOpen] = useState(false);
+  const motorOn = MOTOR.some((item) => item.to === path);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [path]);
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur">
@@ -24,31 +28,88 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="block text-sm text-muted">Electrical and HVAC</span>
             </span>
           </Link>
-          <nav className="hidden gap-5 text-base lg:flex">
-            {LINKS.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={path === link.to ? "font-semibold text-copper-deep" : "text-ink"}
+          <nav className="hidden items-center gap-6 text-base lg:flex">
+            <TopLink to="/" active={path === "/"}>Home</TopLink>
+            <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+              <button
+                type="button"
+                aria-expanded={open}
+                aria-haspopup="true"
+                onClick={() => setOpen((value) => !value)}
+                className={motorOn || open ? "font-semibold text-copper-deep" : "text-ink"}
               >
-                {link.label}
-              </Link>
-            ))}
+                Motor
+              </button>
+              {open ? <MotorMenu path={path} /> : null}
+            </div>
+            <TopLink to="/hvac" active={path === "/hvac"}>HVAC</TopLink>
+            <TopLink to="/feedback" active={path === "/feedback"}>Feedback</TopLink>
           </nav>
         </div>
-        <nav className="flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden">
-          {LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${path === link.to ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
+        <nav className="px-4 pb-3 lg:hidden">
+          <div className="flex gap-2 overflow-x-auto">
+            <Pill to="/" active={path === "/"}>Home</Pill>
+            <button
+              type="button"
+              aria-expanded={open}
+              onClick={() => setOpen((value) => !value)}
+              className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${motorOn || open ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
             >
-              {link.label}
-            </Link>
-          ))}
+              Motor
+            </button>
+            <Pill to="/hvac" active={path === "/hvac"}>HVAC</Pill>
+            <Pill to="/feedback" active={path === "/feedback"}>Feedback</Pill>
+          </div>
+          {open ? (
+            <div className="mt-2 grid gap-2">
+              {MOTOR.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`rounded-xl border px-4 py-3 text-base ${path === item.to ? "border-ink bg-ink text-paper" : "border-line bg-surface"}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ) : null}
         </nav>
       </header>
       {children}
+    </div>
+  );
+}
+
+function TopLink({ to, active, children }: { to: string; active: boolean; children: ReactNode }) {
+  return (
+    <Link to={to} className={active ? "font-semibold text-copper-deep" : "text-ink"}>
+      {children}
+    </Link>
+  );
+}
+
+function Pill({ to, active, children }: { to: string; active: boolean; children: ReactNode }) {
+  return (
+    <Link to={to} className={`shrink-0 rounded-full border px-4 py-2.5 text-base ${active ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}>
+      {children}
+    </Link>
+  );
+}
+
+function MotorMenu({ path }: { path: string }) {
+  return (
+    <div className="absolute left-0 top-full z-40 w-56 pt-2">
+      <div className="rounded-2xl border border-line bg-surface p-2 shadow-sm">
+        {MOTOR.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`block rounded-xl px-3 py-2.5 ${path === item.to ? "bg-ink font-medium text-paper" : "hover:bg-paper"}`}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
