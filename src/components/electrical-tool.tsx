@@ -13,6 +13,15 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function MotorRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-b border-line/70 py-3 sm:flex sm:items-baseline sm:justify-between sm:gap-6">
+      <dt className="text-sm leading-snug text-muted">{label}</dt>
+      <dd className="mt-1 text-xl font-semibold tabular-nums sm:mt-0 sm:shrink-0 sm:text-right sm:text-base">{value}</dd>
+    </div>
+  );
+}
+
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3 border-b border-line/70 py-2">
@@ -97,21 +106,19 @@ export function MotorTool() {
         <Field label="One-way length, feet">
           <input className={control} type="number" min={0} value={feet} onChange={(e) => setFeet(Number(e.target.value))} />
         </Field>
-        <p className="text-sm leading-relaxed text-muted">Single-phase rows in this table are 115 V and 230 V. 200 V, 208 V, 230 V, 460 V, and 575 V are three-phase.</p>
       </form>
       <Result>
         {"error" in result ? <p>{result.error}</p> : (
           <dl>
             <p className="mb-3 rounded-xl bg-pine-soft px-3 py-3 text-sm leading-relaxed text-pine">Branch circuit, planning size. The wire and the short-circuit device use table current, not the nameplate. The overload line uses table current so you can see the percentage. Use the nameplate before you set the relay.</p>
-            <Row label="Table FLC" value={`${num(result.flc, 1)} A`} />
-            <Row label="Minimum conductor amperes, 125%" value={`${num(result.minAmpacity, 1)} A`} />
-            <Row label="Suggested conductor" value={result.wire ? `${result.wire.awg} AWG · ${ampacityOf(result.wire, material, temp)} A` : "Above table"} />
-            <Row label={`Short-circuit device, ${ocpdPercent}% then next standard`} value={result.ocpd ? `${result.ocpd} A` : "Above table"} />
-            <Row label="Calculated device before rounding" value={`${num(result.rawOcpd, 0)} A`} />
-            <Row label="Overload planning value" value={`${num(result.overload, 1)} A`} />
-            <p className="mt-3 text-sm leading-relaxed text-muted">430.22 sizes the wire at 125% of table current. 430.52 sets the short-circuit device, then the next standard size. 430.32 sets the overload at 125% when the service factor is 1.15 or the rise is 40°C, otherwise 115%.</p>
-            <Row label="Disconnect ampere rating, 115%" value={`${num(result.disconnect, 1)} A`} />
-            <Row label="Voltage drop at table FLC" value={result.drop == null ? "—" : `${num(result.drop, 2)} V · ${num(result.dropPercent ?? 0, 1)}%`} />
+            <MotorRow label="Table FLC" value={`${num(result.flc, 1)} A`} />
+            <MotorRow label="Minimum conductor amperes, 125%" value={`${num(result.minAmpacity, 1)} A`} />
+            <MotorRow label="Suggested conductor" value={result.wire ? `${result.wire.awg} AWG · ${ampacityOf(result.wire, material, temp)} A` : "Above table"} />
+            <MotorRow label={`Short-circuit device, ${ocpdPercent}% then next standard`} value={result.ocpd ? `${result.ocpd} A` : "Above table"} />
+            <MotorRow label="Calculated device before rounding" value={`${num(result.rawOcpd, 0)} A`} />
+            <MotorRow label="Overload planning value" value={`${num(result.overload, 1)} A`} />
+            <MotorRow label="Disconnect ampere rating, 115%" value={`${num(result.disconnect, 1)} A`} />
+            <MotorRow label="Voltage drop at table FLC" value={result.drop == null ? "—" : `${num(result.drop, 2)} V · ${num(result.dropPercent ?? 0, 1)}%`} />
           </dl>
         )}
         <ReportLink />
@@ -230,34 +237,42 @@ export function ServiceTool() {
 
 export function WireTool() {
   const [material, setMaterial] = useState<"cu" | "al">("cu");
-  const [temp, setTemp] = useState<"60" | "75">("75");
-  const rows = WIRES.filter((wire) => ampacityOf(wire, material, temp) != null);
+  const rows = WIRES.filter((wire) => (material === "cu" ? wire.cu60 : wire.al60) != null || (material === "cu" ? wire.cu90 : wire.al90) != null);
+  const cell = (value: number | null) => (value == null ? "—" : `${value} A`);
   return (
     <Sheet
       kicker="Table 310.16 · screening"
-      title="Read the ampere column."
-      note="Ordinary 14, 12, and 10 AWG copper are limited to 15 A, 20 A, and 30 A overcurrent devices. Motor circuits are one case where Article 430 sets the short-circuit device instead."
+      title="Read the ampere columns."
+      note="60°C, 75°C, and 90°C are the three columns in the table. Most breakers and lugs are 60°C or 75°C, so the circuit is usually limited to those. The 90°C column is the insulation rating."
       steps={[
-        "This page does not size a job. It only shows how many amperes each wire can carry.",
-        "Pick copper or aluminum, then the 60°C or 75°C column.",
-        "Each row is a wire size and the amperes that size can carry in the column you picked.",
+        "This page does not size a job. It shows how many amperes each wire can carry.",
+        "Pick copper or aluminum.",
+        "Each row shows that size at 60°C, 75°C, and 90°C.",
         "On a normal circuit, 14 AWG copper stops at 15 A, 12 AWG at 20 A, and 10 AWG at 30 A. A motor circuit is one case where the breaker can be higher than that.",
       ]}
     >
       <form className="order-1 grid gap-3" onSubmit={(event) => event.preventDefault()}>
         <CalcHead />
         <Field label="Material"><select className={control} value={material} onChange={(e) => setMaterial(e.target.value as "cu" | "al")}><option value="cu">Copper</option><option value="al">Aluminum</option></select></Field>
-        <Field label="Column"><select className={control} value={temp} onChange={(e) => setTemp(e.target.value as "60" | "75")}><option value="75">75°C</option><option value="60">60°C</option></select></Field>
       </form>
       <Result>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-muted"><th className="py-2">Size</th><th className="py-2">Amperes</th></tr></thead>
+            <thead>
+              <tr className="text-left text-muted">
+                <th className="py-2 pr-3">Size</th>
+                <th className="py-2 pr-3">60°C</th>
+                <th className="py-2 pr-3">75°C</th>
+                <th className="py-2">90°C</th>
+              </tr>
+            </thead>
             <tbody>
               {rows.map((wire) => (
                 <tr key={wire.awg} className="border-t border-line">
-                  <td className="py-2">{wire.awg} AWG</td>
-                  <td className="py-2 tabular-nums">{ampacityOf(wire, material, temp)} A</td>
+                  <td className="py-3 pr-3">{wire.awg}</td>
+                  <td className="py-3 pr-3 tabular-nums">{cell(material === "cu" ? wire.cu60 : wire.al60)}</td>
+                  <td className="py-3 pr-3 tabular-nums">{cell(material === "cu" ? wire.cu75 : wire.al75)}</td>
+                  <td className="py-3 tabular-nums">{cell(material === "cu" ? wire.cu90 : wire.al90)}</td>
                 </tr>
               ))}
             </tbody>
