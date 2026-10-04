@@ -1,4 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { Copy, Fan, Ruler, ThermometerSun } from "lucide-react";
 import { DUTIES, INSULATION, SUN, WINDOWS, ZONES, cfmFromBtu, coolingLoad, formatNum, sizeDuct, type DutyId } from "@/lib/hvac";
 
@@ -111,6 +112,7 @@ export function FieldTool() {
           <button type="button" onClick={copyCard} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-5 text-base font-medium text-paper sm:w-auto">
             <Copy className="size-4" aria-hidden="true" />{copied ? "Copied" : "Copy the field card"}
           </button>
+          <Link to="/feedback" className="inline-flex text-sm font-medium text-copper-deep underline underline-offset-4">Report calculation</Link>
         </section>
       </div>
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur sm:hidden">
