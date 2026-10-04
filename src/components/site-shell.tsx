@@ -8,6 +8,7 @@ const LINKS = [
   { to: "/service", label: "Service" },
   { to: "/wire", label: "Wire" },
   { to: "/hvac", label: "HVAC" },
+  { to: "/feedback", label: "Feedback" },
 ] as const;
 
 export function SiteShell({ children }: { children: ReactNode }) {
@@ -25,11 +26,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </Link>
           <nav className="hidden gap-4 text-sm lg:flex">
             {LINKS.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className={path === link.to ? "font-semibold text-copper-deep" : "text-ink"}
-              >
+              <Link key={link.to} to={link.to} className={path === link.to ? "font-semibold text-copper-deep" : "text-ink"}>
                 {link.label}
               </Link>
             ))}
@@ -37,11 +34,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </div>
         <nav className="flex gap-2 overflow-x-auto px-4 pb-3 lg:hidden">
           {LINKS.map((link) => (
-            <Link
-              key={link.to}
-              to={link.to}
-              className={`shrink-0 rounded-full border px-3 py-2 text-sm ${path === link.to ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}
-            >
+            <Link key={link.to} to={link.to} className={`shrink-0 rounded-full border px-3 py-2 text-sm ${path === link.to ? "border-ink bg-ink text-paper" : "border-line bg-surface text-ink"}`}>
               {link.label}
             </Link>
           ))}
