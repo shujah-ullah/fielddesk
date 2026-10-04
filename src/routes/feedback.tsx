@@ -8,7 +8,12 @@ const TRADES = ["Electrician.", "HVAC.", "Both.", "Engineer."];
 const SHEETS = ["Motor", "Voltage drop", "Service load", "Wire ampacity", "HVAC load and duct."];
 
 export const Route = createFileRoute("/feedback")({
-  head: () => ({ meta: [{ title: "Field check — FieldDesk" }] }),
+  head: () => ({
+    meta: [
+      { title: "Field check — FieldDesk" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: FeedbackPage,
 });
 
