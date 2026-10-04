@@ -15,6 +15,13 @@ npm install
 npm run dev
 ```
 
-## Domain
+## Cloudflare Pages
 
-Canonical domain, when connected: fielddesk.site
+Connect this repo. Use these build settings:
+
+- Production branch: main
+- Build command: npm run build
+- Build output directory: dist/client
+- Node version: 22
+
+Leave the custom domain for later. Pages will issue a pages.dev address. When the domain is ready, add fielddesk.site and redirect fielddesk.cc to it.
