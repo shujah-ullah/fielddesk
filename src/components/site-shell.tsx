@@ -63,7 +63,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
 
           <nav className="mt-3 md:hidden" aria-label="Pages">
-            <div className="grid grid-cols-2 gap-2 rounded-2xl border border-line bg-[#fff8f2] p-2">
+            <div className="flex gap-1 rounded-full border border-line bg-[#fff8f2] p-1">
               <Link to="/" className={phoneTab(path === "/")}>Home</Link>
               <button
                 type="button"
@@ -72,15 +72,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 className={phoneTab(motorOn || motorOpen)}
               >
                 Motor
-                <ChevronDown className={`size-4 ${motorOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+                <ChevronDown className={`size-3.5 shrink-0 ${motorOpen ? "rotate-180" : ""}`} aria-hidden="true" />
               </button>
               <Link to="/hvac" className={phoneTab(path === "/hvac")}>HVAC</Link>
               <Link to="/feedback" className={phoneTab(path === "/feedback")}>Feedback</Link>
             </div>
             {motorOpen ? (
-              <div className="mt-2 grid gap-2">
+              <div className="mt-2 grid gap-1 rounded-2xl border border-line bg-[#fff8f2] p-1">
                 {MOTOR.map((item) => (
-                  <Link key={item.to} to={item.to} className={phoneTab(path === item.to)}>
+                  <Link key={item.to} to={item.to} className={`flex h-11 items-center rounded-xl px-3 text-base ${path === item.to ? "bg-[#f6e6da] font-semibold text-copper-deep" : "text-ink"}`}>
                     {item.label}
                   </Link>
                 ))}
@@ -95,5 +95,5 @@ export function SiteShell({ children }: { children: ReactNode }) {
 }
 
 function phoneTab(on: boolean) {
-  return `flex h-12 items-center justify-center gap-1 rounded-xl px-3 text-base font-medium active:bg-[#efd9c8] ${on ? "bg-[#f6e6da] font-semibold text-copper-deep" : "bg-surface text-ink"}`;
+  return `flex h-11 min-w-0 flex-1 items-center justify-center gap-0.5 whitespace-nowrap rounded-full px-1 text-sm font-medium active:bg-[#efd9c8] ${on ? "bg-[#f6e6da] font-semibold text-copper-deep" : "text-ink"}`;
 }
