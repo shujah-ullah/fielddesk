@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MotorTool } from "@/components/electrical-tool";
 import { SiteShell } from "@/components/site-shell";
+import { calculatorSchema, pageSeo } from "@/lib/seo";
 
 const faq = {
   "@context": "https://schema.org",
@@ -35,15 +36,12 @@ const faq = {
 
 export const Route = createFileRoute("/motor")({
   head: () => ({
-    meta: [
-      { title: "Motor Wire Size Calculator — NEC 430 | FieldDesk" },
-      {
-        name: "description",
-        content:
-          "Size a motor branch circuit from table full-load current: wire at 125%, breaker or fuse from 430.52, and an overload check. Planning sheet, not a permit.",
-      },
-    ],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify(faq) }],
+    ...pageSeo({
+      title: "Motor Wire Size Calculator — NEC 430 | FieldDesk",
+      description: "Size a motor branch circuit from table full-load current: wire at 125%, breaker or fuse from 430.52, and an overload check. Planning sheet, not a permit.",
+      path: "/motor",
+    }),
+    scripts: [{ type: "application/ld+json", children: JSON.stringify([calculatorSchema({ name: "Motor Wire Size Calculator", description: "Size a motor branch circuit from table full-load current, breaker or fuse settings, and an overload check.", path: "/motor" }), faq]) }],
   }),
   component: MotorPage,
 });
@@ -79,4 +77,3 @@ function MotorPage() {
     </SiteShell>
   );
 }
-

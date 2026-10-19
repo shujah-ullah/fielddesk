@@ -1,16 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
+import { pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title: "Electrical and HVAC field calculators — FieldDesk" },
-      {
-        name: "description",
-        content:
-          "Screen a motor circuit, voltage drop, dwelling service, wire amperes, or a duct size before you order material. Planning sheets, not a permit.",
-      },
-    ],
+    ...pageSeo({
+      title: "Electrical and HVAC field calculators — FieldDesk",
+      description: "Screen a motor circuit, voltage drop, dwelling service, wire amperes, or a duct size before you order material. Planning sheets, not a permit.",
+      path: "/",
+    }),
   }),
   component: Home,
 });

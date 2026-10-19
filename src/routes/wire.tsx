@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WireTool } from "@/components/electrical-tool";
 import { SiteShell } from "@/components/site-shell";
+import { calculatorSchema, pageSeo } from "@/lib/seo";
 
 const faq = {
   "@context": "https://schema.org",
@@ -27,16 +28,12 @@ const faq = {
 
 export const Route = createFileRoute("/wire")({
   head: () => ({
-    meta: [
-      { title: "Wire Ampacity Table 310.16 — 60°C, 75°C, 90°C | FieldDesk" },
-      {
-        name: "description",
-        content:
-          "Look up copper or aluminum amperes from Table 310.16 at 60°C, 75°C, or 90°C. Most lugs limit the circuit to 60°C or 75°C.",
-      },
-    ],
-    scripts: [{ type: "application/ld+json", children: JSON.stringify(faq) }],
+    ...pageSeo({
+      title: "Wire Ampacity Table 310.16 — 60°C, 75°C, 90°C | FieldDesk",
+      description: "Look up copper or aluminum amperes from Table 310.16 at 60°C, 75°C, or 90°C. Most lugs limit the circuit to 60°C or 75°C.",
+      path: "/wire",
+    }),
+    scripts: [{ type: "application/ld+json", children: JSON.stringify([calculatorSchema({ name: "Wire Ampacity Table 310.16", description: "Look up copper or aluminum ampacity at 60°C, 75°C, or 90°C.", path: "/wire" }), faq]) }],
   }),
   component: () => <SiteShell><WireTool /></SiteShell>,
 });
-

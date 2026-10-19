@@ -1,17 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { DropTool } from "@/components/electrical-tool";
 import { SiteShell } from "@/components/site-shell";
+import { calculatorSchema, pageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/voltage-drop")({
   head: () => ({
-    meta: [
-      { title: "Voltage Drop Calculator — One-Way Feet | FieldDesk" },
-      {
-        name: "description",
-        content:
-          "Check one-way voltage drop for copper or aluminum. Distance is one way. A continuous load adds 25% before the wire is picked.",
-      },
-    ],
+    ...pageSeo({
+      title: "Voltage Drop Calculator — One-Way Feet | FieldDesk",
+      description: "Check one-way voltage drop for copper or aluminum. Distance is one way. A continuous load adds 25% before the wire is picked.",
+      path: "/voltage-drop",
+    }),
+    scripts: [{ type: "application/ld+json", children: JSON.stringify(calculatorSchema({ name: "Voltage Drop Calculator", description: "Check one-way voltage drop for copper or aluminum and choose a wire for the run.", path: "/voltage-drop" })) }],
   }),
   component: DropPage,
 });
@@ -32,4 +31,3 @@ function DropPage() {
     </SiteShell>
   );
 }
-

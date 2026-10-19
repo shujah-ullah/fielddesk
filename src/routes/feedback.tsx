@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site-shell";
+import { SITE_URL } from "@/lib/seo";
 
 const ACTION = "https://docs.google.com/forms/d/e/1FAIpQLSfPuUiujTS9JwL-45VxKJt34TsTgAHvgzdgoYcHeBIkpzH7OA/formResponse";
 
@@ -12,7 +13,13 @@ export const Route = createFileRoute("/feedback")({
     meta: [
       { title: "Field check — FieldDesk" },
       { name: "robots", content: "noindex, nofollow" },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/feedback` },
+      { property: "og:site_name", content: "FieldDesk" },
+      { property: "og:title", content: "Field check — FieldDesk" },
+      { property: "og:description", content: "Send a correction after trying a FieldDesk calculator." },
     ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/feedback` }],
   }),
   component: FeedbackPage,
 });
